@@ -1,3 +1,3 @@
 # POSApp 🖨️
 
-Ui is really bad. I canttttt uhhh
+UI is really bad. I canttttt uhhh
