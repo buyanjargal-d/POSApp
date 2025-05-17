@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Forms;
 using POSApp.Core.Interfaces;
@@ -20,6 +20,7 @@ namespace POSApp.UI
         private TextBox txtItemCode;
         private Button btnPay;
         private OrderForm orderForm;
+        private string _selectedItemCode;
 
         public MainForm(IAuthService authService, IItemService itemService, IOrderService orderService, User currentUser)
         {
@@ -37,35 +38,13 @@ namespace POSApp.UI
         {
             menuStrip = new MenuStrip();
 
-            var itemMenu = new ToolStripMenuItem("Item");
-            var categoryMenu = new ToolStripMenuItem("Category");
             var helpMenu = new ToolStripMenuItem("Help");
 
-            if (_currentUser.Role == Role.Manager)
-            {
-                var editItem = new ToolStripMenuItem("Edit Item");
-                var deleteItem = new ToolStripMenuItem("Delete Item");
-
-                editItem.Click += EditItem_Click;
-                deleteItem.Click += DeleteItem_Click;
-
-                itemMenu.DropDownItems.Add(editItem);
-                itemMenu.DropDownItems.Add(deleteItem);
-                menuStrip.Items.Add(itemMenu);
-                menuStrip.Items.Add(categoryMenu);
-                menuStrip.Items.Add(helpMenu);
-            }
-            else
-            {
-                menuStrip.Items.Add(itemMenu);
-                menuStrip.Items.Add(helpMenu);
-                itemMenu.Enabled = false;
-            }
             helpMenu.Click += (s, e) =>
             {
                 MessageBox.Show("Need help? Call: 9999-8888", "Support");
             };
-
+            menuStrip.Items.Add(helpMenu);
 
             this.MainMenuStrip = menuStrip;
             Controls.Add(menuStrip);
@@ -90,14 +69,13 @@ namespace POSApp.UI
                 Name = "dgvItems",
                 Left = 10,
                 Top = cmbCategories.Bottom + 10,
-                Width = 300,
+                Width = 500,
                 Height = 300,
                 ReadOnly = true,
                 AllowUserToAddRows = false,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 AutoGenerateColumns = false
             };
-
             dgvItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "Code", HeaderText = "Code", DataPropertyName = "Code" });
             dgvItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "Name", HeaderText = "Name", DataPropertyName = "Name" });
             dgvItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "Category", HeaderText = "Category", DataPropertyName = "Category" });
@@ -111,6 +89,33 @@ namespace POSApp.UI
                     orderForm.RefreshOrderTable();
                 }
             };
+            dgvItems.MouseDown += (s, e) =>
+            {
+                if (e.Button == MouseButtons.Right)
+                {
+                    var hit = dgvItems.HitTest(e.X, e.Y);
+                    if (hit.RowIndex >= 0)
+                    {
+                        dgvItems.ClearSelection();
+                        dgvItems.Rows[hit.RowIndex].Selected = true;
+                        _selectedItemCode = dgvItems.Rows[hit.RowIndex].Cells["Code"].Value.ToString();
+                    }
+                }
+            };
+
+            // ✅ Only assign context menu AFTER dgvItems is initialized
+            if (_currentUser.Role == Role.Manager)
+            {
+                var contextMenu = new ContextMenuStrip();
+                var editMenu = new ToolStripMenuItem("Edit");
+                var deleteMenu = new ToolStripMenuItem("Delete");
+                editMenu.Click += EditMenu_Click;
+                deleteMenu.Click += DeleteMenu_Click;
+                contextMenu.Items.AddRange(new[] { editMenu, deleteMenu });
+
+                dgvItems.ContextMenuStrip = contextMenu;
+            }
+
             Controls.Add(dgvItems);
 
             // Code textbox
@@ -145,6 +150,7 @@ namespace POSApp.UI
             LoadItems();
         }
 
+
         private void LoadCategories()
         {
             var all = _itemService.GetAllItems();
@@ -165,48 +171,39 @@ namespace POSApp.UI
             dgvItems.DataSource = filtered.ToList();
         }
 
-        private void EditItem_Click(object sender, EventArgs e)
+        private void EditMenu_Click(object sender, EventArgs e)
         {
-            string code = Prompt.ShowDialog("Enter item code to edit:", "Edit Item");
-            var item = _itemService.GetItemByCode(code);
-            if (item != null)
-            {
-                string newName = Prompt.ShowDialog("Enter new name:", "Edit Item");
-                string newCategory = Prompt.ShowDialog("Enter category:", "Edit Item");
-                string priceStr = Prompt.ShowDialog("Enter new price:", "Edit Item");
+            if (_selectedItemCode == null) return;
+            var item = _itemService.GetItemByCode(_selectedItemCode);
+            if (item == null) return;
 
-                if (decimal.TryParse(priceStr, out decimal newPrice))
+            using (var form = new EditItemForm(item))
+            {
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    item.Name = newName;
-                    item.Category = newCategory;
-                    item.UnitPrice = newPrice;
+                    item.Name = form.ItemName;
+                    item.Category = form.ItemCategory;
+                    item.UnitPrice = form.ItemPrice;
                     _itemService.UpdateItem(item);
-                    MessageBox.Show("Item updated.");
                     LoadCategories();
                     LoadItems();
                 }
-                else
-                {
-                    MessageBox.Show("Invalid price.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Item not found.");
             }
         }
 
-        private void DeleteItem_Click(object sender, EventArgs e)
+        private void DeleteMenu_Click(object sender, EventArgs e)
         {
-            string code = Prompt.ShowDialog("Enter item code to delete:", "Delete Item");
-            var item = _itemService.GetItemByCode(code);
-            if (item != null)
+            if (_selectedItemCode == null) return;
+            var item = _itemService.GetItemByCode(_selectedItemCode);
+            if (item == null) return;
+
+            var confirm = MessageBox.Show("Are you sure you want to delete this item?", "Confirm", MessageBoxButtons.YesNo);
+            if (confirm == DialogResult.Yes)
             {
                 _itemService.DeleteItem(item.Id);
-                MessageBox.Show("Item deleted.");
+                LoadCategories();
                 LoadItems();
             }
-            else MessageBox.Show("Item not found.");
         }
 
         private void txtItemCode_KeyDown(object sender, KeyEventArgs e)
@@ -238,8 +235,6 @@ namespace POSApp.UI
                 }
             }
         }
-
-
     }
 
     public static class Prompt

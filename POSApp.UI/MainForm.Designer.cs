@@ -29,7 +29,7 @@ partial class MainForm
     private void InitializeComponent()
     {
         this.Text = "POSApp";
-        this.Width = 1200;
+        this.Width = 1400;
         this.Height = 600;
 
     }
