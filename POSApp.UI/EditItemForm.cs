@@ -1,41 +1,109 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using POSApp.Core.Models;
+
 
 namespace POSApp.UI
 {
     public partial class EditItemForm : Form
     {
-        public string ItemName => txtName.Text;
-        public string ItemCategory => txtCategory.Text;
-        public decimal ItemPrice => decimal.TryParse(txtPrice.Text, out var p) ? p : 0;
-
         private TextBox txtName;
         private TextBox txtCategory;
         private TextBox txtPrice;
 
         public EditItemForm(Item item)
         {
-            this.Text = "Edit Item";
-            this.Width = 320;
-            this.Height = 240;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.StartPosition = FormStartPosition.CenterScreen;
+            Text = "Edit Item";
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            StartPosition = FormStartPosition.CenterScreen;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            ClientSize = new Size(340, 220);
+            Font = new Font("Segoe UI", 9f);
 
-            Label lblName = new Label { Text = "Name", Left = 20, Top = 20, Width = 80 };
-            txtName = new TextBox { Text = item.Name, Left = 110, Top = 20, Width = 170 };
+            var layout = new TableLayoutPanel
+            {
+                RowCount = 4,
+                ColumnCount = 2,
+                Dock = DockStyle.Fill,
+                Padding = new Padding(10),
+                AutoSize = true
+            };
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80f));
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30f));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30f));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30f));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+            layout.Controls.Add(new Label
+            {
+                Text = "Name:",
+                Anchor = AnchorStyles.Right,
+                AutoSize = true
+            }, 0, 0);
+            txtName = new TextBox
+            {
+                Text = item.Name,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            layout.Controls.Add(txtName, 1, 0);
+            layout.Controls.Add(new Label
+            {
+                Text = "Category:",
+                Anchor = AnchorStyles.Right,
+                AutoSize = true
+            }, 0, 1);
+            txtCategory = new TextBox
+            {
+                Text = item.Category,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            layout.Controls.Add(txtCategory, 1, 1);
+            layout.Controls.Add(new Label
+            {
+                Text = "Price:",
+                Anchor = AnchorStyles.Right,
+                AutoSize = true
+            }, 0, 2);
+            txtPrice = new TextBox
+            {
+                Text = item.UnitPrice.ToString("0.00"),
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            layout.Controls.Add(txtPrice, 1, 2);
+            var btnPanel = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.RightToLeft,
+                Dock = DockStyle.Fill,
+                Padding = new Padding(0, 10, 0, 0),
+                AutoSize = true
+            };
+            var btnOK = new Button
+            {
+                Text = "OK",
+                DialogResult = DialogResult.OK,
+                AutoSize = true,
+                Margin = new Padding(3)
+            };
+            var btnCancel = new Button
+            {
+                Text = "Cancel",
+                DialogResult = DialogResult.Cancel,
+                AutoSize = true,
+                Margin = new Padding(3)
+            };
+            btnPanel.Controls.AddRange(new Control[] { btnOK, btnCancel });
 
-            Label lblCategory = new Label { Text = "Category", Left = 20, Top = 60, Width = 80 };
-            txtCategory = new TextBox { Text = item.Category, Left = 110, Top = 60, Width = 170 };
+            layout.Controls.Add(btnPanel, 0, 3);
+            layout.SetColumnSpan(btnPanel, 2);
+            AcceptButton = btnOK;
+            CancelButton = btnCancel;
 
-            Label lblPrice = new Label { Text = "Price", Left = 20, Top = 100, Width = 80 };
-            txtPrice = new TextBox { Text = item.UnitPrice.ToString("0.00"), Left = 110, Top = 100, Width = 170 };
-
-            Button btnOK = new Button { Text = "OK", Left = 110, Width = 90, Top = 140, DialogResult = DialogResult.OK };
-            btnOK.Click += (s, e) => this.Close();
-
-            Controls.AddRange(new Control[] { lblName, txtName, lblCategory, txtCategory, lblPrice, txtPrice, btnOK });
-            this.AcceptButton = btnOK;
+            Controls.Add(layout);
         }
+        public string ItemName => txtName.Text.Trim();
+        public string ItemCategory => txtCategory.Text.Trim();
+        public decimal ItemPrice => decimal.TryParse(txtPrice.Text, out var p) ? p : 0m;
     }
 }

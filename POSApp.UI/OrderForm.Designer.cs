@@ -1,16 +1,16 @@
-﻿namespace POSApp.UI
+﻿using System;
+using System.Windows.Forms;
+
+namespace POSApp.UI
 {
     partial class OrderForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
+
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -23,12 +23,13 @@
         #region Windows Form Designer generated code
 
         /// <summary>
-        /// Required method for Designer support - do not modify
+        /// Required method for Designer support – do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponents()
         {
-            dgvOrder = new DataGridView
+            this.SuspendLayout();
+            this.dgvOrder = new DataGridView
             {
                 Name = "dgvOrder",
                 Top = 0,
@@ -39,11 +40,9 @@
                 RowHeadersVisible = false,
                 ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
             };
-
-            dgvOrder.Columns.Add("Code", "Code");
-            dgvOrder.Columns.Add("Name", "Name");
-            dgvOrder.Columns.Add("Total", "Total");
-
+            this.dgvOrder.Columns.Add("Code", "Code");
+            this.dgvOrder.Columns.Add("Name", "Name");
+            this.dgvOrder.Columns.Add("Total", "Total");
             var minusBtn = new DataGridViewButtonColumn
             {
                 Name = "Minus",
@@ -52,14 +51,12 @@
                 UseColumnTextForButtonValue = true,
                 Width = 30
             };
-
             var qtyCol = new DataGridViewTextBoxColumn
             {
                 Name = "Quantity",
                 HeaderText = "Qty",
                 Width = 50
             };
-
             var plusBtn = new DataGridViewButtonColumn
             {
                 Name = "Plus",
@@ -69,17 +66,24 @@
                 Width = 30
             };
 
-            dgvOrder.Columns.Add(minusBtn);
-            dgvOrder.Columns.Add(qtyCol);
-            dgvOrder.Columns.Add(plusBtn);
+            this.dgvOrder.Columns.Add(minusBtn);
+            this.dgvOrder.Columns.Add(qtyCol);
+            this.dgvOrder.Columns.Add(plusBtn);
+            this.dgvOrder.CellEndEdit += DgvOrder_CellEndEdit;
+            this.dgvOrder.CellContentClick += DgvOrder_CellContentClick;
+            this.lblTotal = new Label
+            {
+                Name = "lblTotal",
+                Top = 230,
+                Left = 0,
+                Width = 200,
+                Text = "Total: $0.00"
+            };
+            this.Controls.Add(this.dgvOrder);
+            this.Controls.Add(this.lblTotal);
 
-            dgvOrder.CellEndEdit += DgvOrder_CellEndEdit;
-            dgvOrder.CellContentClick += DgvOrder_CellContentClick;
-
-            lblTotal = new Label { Name = "lblTotal", Top = 230, Left = 0, Width = 200, Text = "Total: $0.00" };
-
-            Controls.Add(dgvOrder);
-            Controls.Add(lblTotal);
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         #endregion

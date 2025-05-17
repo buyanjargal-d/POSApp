@@ -35,7 +35,6 @@ namespace POSApp.UI
                     _orderService.DecrementQuantity(code);
                 }
 
-                // Remove item if quantity is zero
                 var updatedItems = _orderService.GetOrderItems().ToList();
                 var itemToRemove = updatedItems.FirstOrDefault(x => x.Item.Code == code && x.Quantity == 0);
                 if (itemToRemove != null)
@@ -91,12 +90,12 @@ namespace POSApp.UI
             foreach (var item in _orderService.GetOrderItems())
             {
                 dgvOrder.Rows.Add(
-                    item.Item.Code,       // Code column
-                    item.Item.Name,       // Name column
-                    item.Total,           // Total column
-                    "-",                  // Minus button column
-                    item.Quantity,        // Quantity (TextBoxColumn)
-                    "+"                   // Plus button column
+                    item.Item.Code,     
+                    item.Item.Name,     
+                    item.Total,         
+                    "-",                 
+                    item.Quantity,        
+                    "+"                   
                 );
             }
 

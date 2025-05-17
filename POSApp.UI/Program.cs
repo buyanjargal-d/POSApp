@@ -17,11 +17,11 @@ static class Program
             .Options;
 
         var dbContext = new DatabaseContext(options);
-        dbContext.Database.Migrate(); // ensures schema + seed
+        dbContext.Database.Migrate();
 
         IItemService itemService = new ItemService(dbContext);
         IOrderService orderService = new OrderService(itemService);
-        IAuthService authService = new AuthService(); // Swap with EF-backed version if implemented
+        IAuthService authService = new AuthService(); 
 
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
