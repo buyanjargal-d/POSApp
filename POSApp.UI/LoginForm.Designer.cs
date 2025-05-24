@@ -30,14 +30,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            var txtUsername = new TextBox { Name = "txtUsername", Top = 20, Left = 20, Width = 200 };
-            var txtPassword = new TextBox { Name = "txtPassword", Top = 60, Left = 20, Width = 200, UseSystemPasswordChar = true };
-            var btnLogin = new Button { Name = "btnLogin", Text = "Login", Top = 100, Left = 20 };
-            btnLogin.Click += btnLogin_Click;
-
-            Controls.Add(txtUsername);
-            Controls.Add(txtPassword);
-            Controls.Add(btnLogin);
+            this.SuspendLayout();
+            this.txtUsername = new System.Windows.Forms.TextBox
+            {
+                Name = "txtUsername",
+                Location = new System.Drawing.Point(20, 20),
+                Size = new System.Drawing.Size(200, 22),
+                TabIndex = 0
+            };
+            this.Controls.Add(this.txtUsername);
+            this.txtPassword = new System.Windows.Forms.TextBox
+            {
+                Name = "txtPassword",
+                Location = new System.Drawing.Point(20, 60),
+                Size = new System.Drawing.Size(200, 22),
+                UseSystemPasswordChar = true,
+                TabIndex = 1
+            };
+            this.Controls.Add(this.txtPassword);
+            this.btnLogin = new System.Windows.Forms.Button
+            {
+                Name = "btnLogin",
+                Text = "Login",
+                Location = new System.Drawing.Point(20, 100),
+                Size = new System.Drawing.Size(75, 25),
+                TabIndex = 2,
+            };
+            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
+            this.Controls.Add(this.btnLogin);
         }
 
         private void btnLogin_Click(object sender, EventArgs e)

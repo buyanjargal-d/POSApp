@@ -2,15 +2,8 @@
 
 partial class MainForm
 {
-    /// <summary>
-    ///  Required designer variable.
-    /// </summary>
     private System.ComponentModel.IContainer components = null;
 
-    /// <summary>
-    ///  Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing)
     {
         if (disposing && (components != null))
@@ -29,7 +22,7 @@ partial class MainForm
     private void InitializeComponent()
     {
         this.Text = "POSApp";
-        this.Width = 1200;
+        this.Width = 1400;
         this.Height = 600;
 
     }

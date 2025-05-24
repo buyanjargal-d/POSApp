@@ -26,17 +26,44 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
+
         private void InitializeComponent()
         {
-            var lblTotalAmount = new Label { Name = "lblTotalAmount", Top = 20, Left = 20, Width = 200, Text = $"Total: ${_total:0.00}" };
-            var txtCash = new TextBox { Name = "txtCash", Top = 60, Left = 20, Width = 200 };
-            var btnConfirm = new Button { Name = "btnConfirm", Text = "Confirm", Top = 100, Left = 20 };
-            btnConfirm.Click += (s, e) => btnConfirm_Click(txtCash);
+            this.SuspendLayout();
+            this.lblTotalAmount = new Label
+            {
+                Name = "lblTotalAmount",
+                Location = new System.Drawing.Point(20, 20),
+                Size = new System.Drawing.Size(200, 22),
+                Text = $"Total: ${_total:0.00}"
+            };
+            this.Controls.Add(this.lblTotalAmount);
+            this.txtCash = new TextBox
+            {
+                Name = "txtCash",
+                Location = new System.Drawing.Point(20, 60),
+                Size = new System.Drawing.Size(200, 22),
+                TabIndex = 0
+            };
+            this.Controls.Add(this.txtCash);
+            this.btnConfirm = new Button
+            {
+                Name = "btnConfirm",
+                Text = "Confirm",
+                Location = new System.Drawing.Point(20, 100),
+                Size = new System.Drawing.Size(75, 25),
+                TabIndex = 1
+            };
+            this.btnConfirm.Click += (s, e) => btnConfirm_Click(this.txtCash);
+            this.Controls.Add(this.btnConfirm);
+            this.ClientSize = new System.Drawing.Size(250, 150);
+            this.Name = "PayForm";
+            this.Text = "Payment";
 
-            Controls.Add(lblTotalAmount);
-            Controls.Add(txtCash);
-            Controls.Add(btnConfirm);
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
+
 
         private void btnConfirm_Click(TextBox txtCash)
         {
