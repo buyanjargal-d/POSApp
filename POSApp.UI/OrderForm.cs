@@ -21,33 +21,39 @@ namespace POSApp.UI
         }
 
         private void DgvOrder_CellContentClick(object sender, DataGridViewCellEventArgs e)
+{
+    if (e.RowIndex >= 0)
+    {
+        if (_orderService == null) return;
+
+        var codeCell = dgvOrder.Rows[e.RowIndex].Cells["Code"];
+        if (codeCell?.Value == null) return;
+
+        var code = codeCell.Value.ToString();
+
+        if (dgvOrder.Columns[e.ColumnIndex].Name == "Plus")
         {
-            if (e.RowIndex >= 0)
-            {
-                var code = dgvOrder.Rows[e.RowIndex].Cells["Code"].Value.ToString();
-
-                if (dgvOrder.Columns[e.ColumnIndex].Name == "Plus")
-                {
-                    _orderService.IncrementQuantity(code);
-                }
-                else if (dgvOrder.Columns[e.ColumnIndex].Name == "Minus")
-                {
-                    _orderService.DecrementQuantity(code);
-                }
-
-                var updatedItems = _orderService.GetOrderItems().ToList();
-                var itemToRemove = updatedItems.FirstOrDefault(x => x.Item.Code == code && x.Quantity == 0);
-                if (itemToRemove != null)
-                {
-                    updatedItems.Remove(itemToRemove);
-                    typeof(List<OrderItem>)
-                        .GetField("_orderItems", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                        ?.SetValue(_orderService, updatedItems);
-                }
-
-                RefreshOrderTable();
-            }
+            _orderService.IncrementQuantity(code);
         }
+        else if (dgvOrder.Columns[e.ColumnIndex].Name == "Minus")
+        {
+            _orderService.DecrementQuantity(code);
+        }
+
+        var updatedItems = _orderService.GetOrderItems().ToList();
+
+        var itemToRemove = updatedItems.FirstOrDefault(x => x?.Item?.Code == code && x.Quantity == 0);
+        if (itemToRemove != null)
+        {
+            updatedItems.Remove(itemToRemove);
+            // Replace this line with a proper method
+            _orderService.SetOrderItems(updatedItems);
+        }
+
+        RefreshOrderTable();
+    }
+}
+
 
         private void DgvOrder_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
