@@ -28,44 +28,95 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
+        private System.Windows.Forms.Label lblUsername;
+        private System.Windows.Forms.Label lblPassword;
+
         private void InitializeComponent()
         {
             this.SuspendLayout();
-            this.txtUsername = new System.Windows.Forms.TextBox
+
+            this.Text = "Login";
+            this.Size = new System.Drawing.Size(700, 400);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
+
+            Panel leftPanel = new Panel
             {
-                Name = "txtUsername",
-                Location = new System.Drawing.Point(20, 20),
-                Size = new System.Drawing.Size(200, 22),
-                TabIndex = 0
+                Dock = DockStyle.Left,
+                Width = 350,
+                BackColor = Color.White
             };
-            this.Controls.Add(this.txtUsername);
-            this.txtPassword = new System.Windows.Forms.TextBox
+            this.Controls.Add(leftPanel);
+
+            Label lblWelcome = new Label
             {
-                Name = "txtPassword",
-                Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(200, 22),
+                Text = "Welcome back",
+                Font = new Font("Segoe UI", 18, FontStyle.Bold),
+                Location = new Point(30, 40),
+                AutoSize = true
+            };
+            leftPanel.Controls.Add(lblWelcome);
+
+            txtUsername = new TextBox
+            {
+                PlaceholderText = "Username",
+                Location = new Point(30, 100),
+                Size = new Size(280, 30)
+            };
+            leftPanel.Controls.Add(txtUsername);
+
+            txtPassword = new TextBox
+            {
+                PlaceholderText = "Password",
                 UseSystemPasswordChar = true,
-                TabIndex = 1
+                Location = new Point(30, 150),
+                Size = new Size(280, 30)
             };
-            this.Controls.Add(this.txtPassword);
-            this.btnLogin = new System.Windows.Forms.Button
+            leftPanel.Controls.Add(txtPassword);
+
+            btnLogin = new Button
             {
-                Name = "btnLogin",
                 Text = "Login",
-                Location = new System.Drawing.Point(20, 100),
-                Size = new System.Drawing.Size(75, 25),
-                TabIndex = 2,
+                BackColor = Color.MediumPurple,
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Location = new Point(30, 200),
+                Size = new Size(280, 35)
             };
-            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
-            this.Controls.Add(this.btnLogin);
+            btnLogin.FlatAppearance.BorderSize = 0;
+            btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
+            leftPanel.Controls.Add(btnLogin);
+            
+
+            Panel rightPanel = new Panel
+            {
+                Dock = DockStyle.Right,
+                Width = 350,
+                BackColor = Color.MediumPurple
+            };
+            this.Controls.Add(rightPanel);
+
+            PictureBox picture = new PictureBox
+            {
+                Image = Image.FromFile("images/illustration.png"),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Dock = DockStyle.Fill
+
+            };
+            rightPanel.Controls.Add(picture);
+
+            this.ResumeLayout(false);
         }
+
+
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            var username = Controls["txtUsername"] as TextBox;
-            var password = Controls["txtPassword"] as TextBox;
+            var usernameText = txtUsername.Text.Trim();
+            var passwordText = txtPassword.Text;
 
-            var user = _authService.Login(username.Text.Trim(), password.Text);
+            var user = _authService.Login(usernameText, passwordText);
 
             if (user != null)
             {

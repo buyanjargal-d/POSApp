@@ -29,61 +29,61 @@ namespace POSApp.UI
         private void InitializeComponents()
         {
             this.SuspendLayout();
-            this.dgvOrder = new DataGridView
-            {
-                Name = "dgvOrder",
-                Top = 0,
-                Left = 0,
-                Width = 500,
-                Height = 220,
-                AllowUserToAddRows = false,
-                RowHeadersVisible = false,
-                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-            };
-            this.dgvOrder.Columns.Add("Code", "Code");
-            this.dgvOrder.Columns.Add("Name", "Name");
-            this.dgvOrder.Columns.Add("Total", "Total");
-            var minusBtn = new DataGridViewButtonColumn
-            {
-                Name = "Minus",
-                HeaderText = "-",
-                Text = "-",
-                UseColumnTextForButtonValue = true,
-                Width = 30
-            };
-            var qtyCol = new DataGridViewTextBoxColumn
-            {
-                Name = "Quantity",
-                HeaderText = "Qty",
-                Width = 50
-            };
-            var plusBtn = new DataGridViewButtonColumn
-            {
-                Name = "Plus",
-                HeaderText = "+",
-                Text = "+",
-                UseColumnTextForButtonValue = true,
-                Width = 30
-            };
+            //this.dgvOrder = new DataGridView
+            //{
+            //    Name = "dgvOrder",
+            //    Top = 0,
+            //    Left = 0,
+            //    Width = 500,
+            //    Height = 220,
+            //    AllowUserToAddRows = false,
+            //    RowHeadersVisible = false,
+            //    ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+            //};
+            //this.dgvOrder.Columns.Add("Code", "Code");
+            //this.dgvOrder.Columns.Add("Name", "Name");
+            //this.dgvOrder.Columns.Add("Total", "Total");
+            //var minusBtn = new DataGridViewButtonColumn
+            //{
+            //    Name = "Minus",
+            //    HeaderText = "-",
+            //    Text = "-",
+            //    UseColumnTextForButtonValue = true,
+            //    Width = 30
+            //};
+            //var qtyCol = new DataGridViewTextBoxColumn
+            //{
+            //    Name = "Quantity",
+            //    HeaderText = "Qty",
+            //    Width = 50
+            //};
+            //var plusBtn = new DataGridViewButtonColumn
+            //{
+            //    Name = "Plus",
+            //    HeaderText = "+",
+            //    Text = "+",
+            //    UseColumnTextForButtonValue = true,
+            //    Width = 30
+            //};
 
-            this.dgvOrder.Columns.Add(minusBtn);
-            this.dgvOrder.Columns.Add(qtyCol);
-            this.dgvOrder.Columns.Add(plusBtn);
-            this.dgvOrder.CellEndEdit += DgvOrder_CellEndEdit;
-            this.dgvOrder.CellContentClick += DgvOrder_CellContentClick;
-            this.lblTotal = new Label
-            {
-                Name = "lblTotal",
-                Top = 230,
-                Left = 0,
-                Width = 200,
-                Text = "Total: $0.00"
-            };
-            this.Controls.Add(this.dgvOrder);
-            this.Controls.Add(this.lblTotal);
+            //this.dgvOrder.Columns.Add(minusBtn);
+            //this.dgvOrder.Columns.Add(qtyCol);
+            //this.dgvOrder.Columns.Add(plusBtn);
+            //this.dgvOrder.CellEndEdit += DgvOrder_CellEndEdit;
+            //this.dgvOrder.CellContentClick += DgvOrder_CellContentClick;
+            //this.lblTotal = new Label
+            //{
+            //    Name = "lblTotal",
+            //    Top = 230,
+            //    Left = 0,
+            //    Width = 200,
+            //    Text = "Total: $0.00"
+            //};
+            //this.Controls.Add(this.dgvOrder);
+            //this.Controls.Add(this.lblTotal);
 
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            //this.ResumeLayout(false);
+            //this.PerformLayout();
         }
 
         #endregion

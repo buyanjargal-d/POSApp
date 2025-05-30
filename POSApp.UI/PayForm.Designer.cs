@@ -29,39 +29,74 @@
 
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            this.lblTotalAmount = new Label
-            {
-                Name = "lblTotalAmount",
-                Location = new System.Drawing.Point(20, 20),
-                Size = new System.Drawing.Size(200, 22),
-                Text = $"Total: ${_total:0.00}"
-            };
-            this.Controls.Add(this.lblTotalAmount);
-            this.txtCash = new TextBox
-            {
-                Name = "txtCash",
-                Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(200, 22),
-                TabIndex = 0
-            };
-            this.Controls.Add(this.txtCash);
-            this.btnConfirm = new Button
-            {
-                Name = "btnConfirm",
-                Text = "Confirm",
-                Location = new System.Drawing.Point(20, 100),
-                Size = new System.Drawing.Size(75, 25),
-                TabIndex = 1
-            };
-            this.btnConfirm.Click += (s, e) => btnConfirm_Click(this.txtCash);
-            this.Controls.Add(this.btnConfirm);
-            this.ClientSize = new System.Drawing.Size(250, 150);
-            this.Name = "PayForm";
-            this.Text = "Payment";
+            Text = "Payment";
+            Size = new Size(350, 280);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            BackColor = Color.White;
+            StartPosition = FormStartPosition.CenterParent;
 
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            // Title
+            lblTitle = new Label
+            {
+                Text = "Complete Payment",
+                Font = new Font("Segoe UI", 16F, FontStyle.Bold),
+                ForeColor = Color.MediumPurple,
+                AutoSize = true,
+                Location = new Point(20, 20)
+            };
+
+            // Amount Due
+            lblAmount = new Label
+            {
+                Text = $"Amount Due: ${_total:0.00}",
+                Font = new Font("Segoe UI", 12F, FontStyle.Regular),
+                AutoSize = true,
+                Location = new Point(20, 70)
+            };
+
+            // Cash input
+            var lblCash = new Label
+            {
+                Text = "Cash Received:",
+                Font = new Font("Segoe UI", 12F, FontStyle.Regular),
+                AutoSize = true,
+                Location = new Point(20, 110)
+            };
+            numCash = new NumericUpDown
+            {
+                DecimalPlaces = 2,
+                Increment = 0.50M,
+                Minimum = 0,
+                Maximum = 10000,
+                Size = new Size(120, 25),
+                Location = new Point(160, 108)
+            };
+            numCash.ValueChanged += (s, e) => UpdateChange();
+
+            // Change display
+            lblChange = new Label
+            {
+                Text = "Change: $0.00",
+                Font = new Font("Segoe UI", 12F, FontStyle.Regular),
+                AutoSize = true,
+                Location = new Point(20, 150)
+            };
+
+            // Confirm button
+            btnConfirm = new Button
+            {
+                Text = "Pay Now",
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                BackColor = Color.MediumPurple,
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(280, 40),
+                Location = new Point(20, 190)
+            };
+            btnConfirm.FlatAppearance.BorderSize = 0;
+            btnConfirm.Click += BtnConfirm_Click;
+
+            Controls.AddRange(new Control[] { lblTitle, lblAmount, lblCash, numCash, lblChange, btnConfirm });
         }
 
 

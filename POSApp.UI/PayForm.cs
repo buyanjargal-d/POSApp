@@ -1,98 +1,83 @@
-﻿using POSApp.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System;
 using System.Drawing;
-using System.Drawing.Printing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using POSApp.Core.Interfaces;
 
 namespace POSApp.UI
 {
     public partial class PayForm : Form
     {
         private readonly decimal _total;
-
-        private Label lblTotalAmount;
-        private TextBox txtCash;
-        private Button btnConfirm;
         private readonly IOrderService _orderService;
+
+        private Label lblTitle;
+        private Label lblAmount;
+        private Label lblChange;
+        private NumericUpDown numCash;
+        private Button btnConfirm;
 
         public PayForm(decimal total, IOrderService orderService)
         {
             _total = total;
             _orderService = orderService;
             InitializeComponent();
+            Load += PayForm_Load;
         }
+
+        
 
         private void PayForm_Load(object sender, EventArgs e)
         {
-            lblTotalAmount.Text = $"Total: ${_total:0.00}";
+            numCash.Value = _total;
+            UpdateChange();
         }
 
-        private void btnConfirm_Click(object sender, EventArgs e)
+        private void UpdateChange()
         {
-            if (decimal.TryParse(txtCash.Text, out decimal cashGiven))
-            {
-                if (cashGiven >= _total)
-                {
-                    var change = cashGiven - _total;
-                    PrintReceipt(cashGiven, change); 
-                    MessageBox.Show($"Change: ${change:0.00}", "Payment Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    DialogResult = DialogResult.OK;
-                }
-                else
-                {
-                    MessageBox.Show("Insufficient cash.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Invalid amount.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            var cash = numCash.Value;
+            var change = cash > _total ? cash - _total : 0;
+            lblChange.Text = $"Change: ${change:0.00}";
         }
 
+        private void BtnConfirm_Click(object sender, EventArgs e)
+        {
+            var cash = numCash.Value;
+            if (cash < _total)
+            {
+                MessageBox.Show("Insufficient cash.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            var change = cash - _total;
+            PrintReceipt(cash, change);
+            //MessageBox.Show($"Payment successful! Change: ${ change: 0.00} ", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            DialogResult = DialogResult.OK;
+        }
 
         private void PrintReceipt(decimal paid, decimal change)
         {
-            var items = _orderService.GetOrderItems().ToList();
-            var total = _total;
-
-            PrintDocument doc = new PrintDocument();
+            using var doc = new System.Drawing.Printing.PrintDocument();
             doc.PrintPage += (s, e) =>
             {
                 float y = 20;
-                var font = new Font("Consolas", 10);
-                var bold = new Font("Consolas", 12, FontStyle.Bold);
-                var brush = Brushes.Black;
-
-                e.Graphics.DrawString("POS RECEIPT", bold, brush, 20, y);
+                var font = new Font("Segoui UI", 10F);
+                var bold = new Font("Segoe UI", 12F, FontStyle.Bold);
+                e.Graphics.DrawString("POS RECEIPT", bold, Brushes.Black, 20, y);
                 y += 30;
-
-                foreach (var item in items)
+                foreach (var item in _orderService.GetOrderItems().ToList())
                 {
-                    string line = $"{item.Item.Name} x{item.Quantity} @ ${item.Item.UnitPrice:0.00}";
-                    e.Graphics.DrawString(line, font, brush, 20, y);
+                    var line = $"{item.Item.Name} x{item.Quantity} @ ${item.Item.UnitPrice:0.00}";
+                    e.Graphics.DrawString(line, font, Brushes.Black, 20, y);
                     y += 20;
                 }
-
                 y += 10;
-                e.Graphics.DrawString($"Total: ${total:0.00}", font, brush, 20, y); y += 20;
-                e.Graphics.DrawString($"Paid:  ${paid:0.00}", font, brush, 20, y); y += 20;
-                e.Graphics.DrawString($"Change:${change:0.00}", font, brush, 20, y); y += 30;
-                e.Graphics.DrawString("Thank you!", font, brush, 20, y);
+                e.Graphics.DrawString($"Total: ${_total:0.00}", font, Brushes.Black, 20, y); y += 20;
+                e.Graphics.DrawString($"Paid: ${paid:0.00}", font, Brushes.Black, 20, y); y += 20;
+                e.Graphics.DrawString($"Change: ${change:0.00}", font, Brushes.Black, 20, y); y += 30;
+                e.Graphics.DrawString("Thank you!", font, Brushes.Black, 20, y);
             };
-
-            new PrintPreviewDialog
-            {
-                Document = doc,
-                Width = 600,
-                Height = 800
-            }.ShowDialog();
+            using var preview = new PrintPreviewDialog { Document = doc, Width = 500, Height = 600 };
+            preview.ShowDialog();
         }
-
     }
 }

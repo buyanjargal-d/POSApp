@@ -27,12 +27,12 @@ namespace POSApp.Data
 
             // Seed Items
             modelBuilder.Entity<Item>().HasData(
-                new Item { Id = 1, Code = "A001", Name = "Water Bottle", UnitPrice = 1.99m, Category = "Drinks"},
-                new Item { Id = 2, Code = "A002", Name = "Notebook", UnitPrice = 3.49m, Category = "Others" },
-                new Item { Id = 3, Code = "A003", Name = "Pen", UnitPrice = 0.99m, Category = "Others" },
-                new Item { Id = 4, Code = "A004", Name = "Burger", UnitPrice = 1.99m, Category = "Foods" },
-                new Item { Id = 5, Code = "A005", Name = "Cup", UnitPrice = 3.49m, Category = "Others" },
-                new Item { Id = 6, Code = "A006", Name = "Test", UnitPrice = 0.99m, Category = "Test" }
+                new Item { Id = 1, Code = "A001", Name = "Water Bottle", UnitPrice = 1.99m, Category = "Drinks", ImagePath = "images/water.png"},
+                new Item { Id = 2, Code = "A002", Name = "Notebook", UnitPrice = 3.49m, Category = "Others", ImagePath = "images/water.png" },
+                new Item { Id = 3, Code = "A003", Name = "Pen", UnitPrice = 0.99m, Category = "Others", ImagePath = "images/water.png" },
+                new Item { Id = 4, Code = "A004", Name = "Burger", UnitPrice = 1.99m, Category = "Foods", ImagePath = "images/water.png" },
+                new Item { Id = 5, Code = "A005", Name = "Cup", UnitPrice = 3.49m, Category = "Others", ImagePath = "images/water.png" },
+                new Item { Id = 6, Code = "A006", Name = "Test", UnitPrice = 0.99m, Category = "Test", ImagePath = "images/water.png" }
             );
 
             base.OnModelCreating(modelBuilder);
