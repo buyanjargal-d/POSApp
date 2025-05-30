@@ -23,12 +23,6 @@ namespace POSApp.UI
             this.Height = 240;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.StartPosition = FormStartPosition.CenterScreen;
-
-
-
         }
-        public string ItemName => txtName.Text.Trim();
-        public string ItemCategory => txtCategory.Text.Trim();
-        public decimal ItemPrice => decimal.TryParse(txtPrice.Text, out var p) ? p : 0m;
     }
 }
